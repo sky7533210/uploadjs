@@ -756,16 +756,16 @@ FileUpload = function(uri,domNodeSelectStr,domNodeDragStr="",chunkSize = 20 * 10
 	var domNodeDrag;
 	var fileQueue = []; //文件队列，可以多次添加文件
 	/**
-	 * onAddFiles：  添加文件触发
-	 * onStart：总开始上传文件
-	 * onComplete：  文件队列中的文件全部文件完成
-	 * onStartOneFile：文件队列中一个文件开始上传
-	 * onCompleteOneFile  文件队列中一个文件上传完成
-	 * onProgress:当前正在上传中文件的进度
-	 * ondragenter 拖动的文件进入绑定的dom
-	 * ondragleave 拖动的文件离开绑定的dom
-	 * ondrop  拖动的文件在dom中释放  
-	 * onPause 暂停当前文件的上传  
+	 * f.onAddFiles=function(files){}：  添加文件触发 参数：添加的文件数组
+	 * f.onStart=function(){}：总开始上传文件  无参
+	 * f.onComplete=function(){}：  文件队列中的文件全部文件完成  无参
+	 * f.onStartOneFile=function(file){}：文件队列中一个文件开始上传  参数：开始的上传的一个文件
+	 * f.onCompleteOneFile=function(file){}  文件队列中一个文件上传完成  参数：完成的文件
+	 * f.onProgress=function(file,loaded,total){}:当前正在上传中文件的进度  参数：正在上传的一个文件   上传了多少  总大小
+	 * f.ondragenter=function(dom){} 拖动的文件进入绑定的dom  参数：绑定的dom
+	 * f.ondragleave=function(dom){} 拖动的文件离开绑定的dom  参数：绑定的dom
+	 * f.ondrop=function(dom){}  拖动的文件在dom中释放  参数：绑定的dom
+	 * f.onPause=function(){} 暂停当前文件的上传  无参
 	 */
 	var listener = {
 		onAddFiles: function() {},
@@ -966,7 +966,8 @@ FileUpload = function(uri,domNodeSelectStr,domNodeDragStr="",chunkSize = 20 * 10
 	domNodeDrag.ondrop=function(e){
 		listener.ondrop(e.target);
 		var files = e.dataTransfer.files;
-		listener.onAddFiles(files);
+		if(files.length>0)
+			listener.onAddFiles(files);
 		for (var i = 0; i < files.length; ++i)
 			fileQueue.push(files[i]);
 		if (!isStart) {
