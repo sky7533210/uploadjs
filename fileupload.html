@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input type="file" id="fileupload" value="" multiple="" />
+		<button id="btn">按钮</button>
+		<p id="progress"></p>
+		<button id="pause">暂停</button>
+		<button id="goon">继续</button>
+		<button id="btn2" style="width: 200px;height: 200px;">按钮</button>
+		<script src="upload.js"></script>
+		<script type="text/javascript">
+			var f=new FileUpload("/fileupload.php","#btn","#btn2");
+			var progress=document.getElementById("progress");
+			
+			var pause=document.getElementById("pause");
+			pause.onclick=function(){
+				//暂停
+				f.pause();
+			}
+			
+			
+			var goon=document.getElementById("goon");
+			goon.onclick=function(){
+				//暂停后的触发继续
+				f.upload();
+			}
+			
+			//添加了文件回调  参数添加的文件的数组
+			f.onAddFiles=function(files){
+				console.log("add file");
+			}
+			//正在上传文件的进度回调,参数file正在上传的文件  loaded上传了的大小,total这个文件的大小  
+			//,如果一次添加了多个文件的话 会一个一个按顺序上传,此回调函数相应的参数会变成当前上传文件的数据
+			f.onProgress=function(file,loaded,total){
+				var p=loaded/total;
+				console.log(file.name,p.toFixed(2));
+				progress.innerText=p.toFixed(2);
+			}
+			
+			//开始上传一个文件的时候触发,如果你选择了多个文件,这个函数会触发多次,它是每一个文件开始上传的时候触发
+			f.onStartOneFile=function(file){
+				console.log(file.name+" start");
+			}
+			
+			//完成了一个文件上传的回调 参数是当前完成的文件
+			f.onCompleteOneFile=function(file){
+				console.log(file.name+" complete");
+			}
+			//当添加的所有的文件都上传完成回调
+			f.onComplete=function(){
+				console.log("all complete");
+			}
+			//当开始上传的时候调用,如果你上一次添加的文件已经上传完成了,如果你再选择文件上传会触发此事件,
+			f.onStart=function(){
+				console.log("onStart");
+			}
+			//当你拖动一个文件进入到你设置的拖动上传dom上时触发 参数是你设置的dom
+			f.ondragenter=function(target){
+				console.log(target,"enter");
+			}
+			//当你拖动一个文件离开到设置的拖动上传dom上时触发 参数是你设置的dom
+			f.ondragleave=function(target){
+				console.log(target,"leave");
+			}
+			//当你拖动一个文件释放在你设置的拖动上传dom上时触发 参数是你设置的dom,此时文件就会自动开始上传
+			f.ondrop=function(target){
+				console.log(target,"drop");
+			}
+			//当你调用了f.pause()来暂停上传时会触发
+			f.onPause=function(){
+				console.log("pause");
+			}
+			
+		</script>
+	</body>
+	
+</html>
